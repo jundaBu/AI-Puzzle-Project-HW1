@@ -5,6 +5,21 @@ window.onload = function () {
   const winMessage = document.getElementById("win-message");
   let positions = [0, 1, 2, 3, 4, 5, 6, 7, null]; // null = empty tile
 
+  let imageSrc = "cr7.jpg"; // default image
+
+document.getElementById("image-upload").addEventListener("change", function (event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    imageSrc = e.target.result;
+    drawPuzzle(); // re-draw with new image
+  };
+  reader.readAsDataURL(file);
+});
+
+
   function drawPuzzle() {
     puzzle.innerHTML = "";
     positions.forEach((tile, i) => {
@@ -19,7 +34,8 @@ window.onload = function () {
       div.style.left = `${col * 100}px`;
 
       // ✅ Add background image and position
-      div.style.backgroundImage = "url('cr7.jpg')";
+      div.style.backgroundImage = `url('${imageSrc}')`;
+
       div.style.backgroundSize = "300px 300px";
 
       const bgRow = Math.floor(tile / 3);
@@ -61,41 +77,60 @@ window.onload = function () {
 
   function solvePuzzle(start) {
     const target = [0, 1, 2, 3, 4, 5, 6, 7, null];
-    const visited = new Set();
-    const queue = [{ state: start, path: [] }];
-
+    const targetStr = target.map(v => v === null ? 'x' : v).join(',');
+    
     const serialize = arr => arr.map(v => v === null ? 'x' : v).join(',');
-    visited.add(serialize(start));
-
-    while (queue.length > 0) {
-      const { state, path } = queue.shift();
-
-      if (serialize(state) === serialize(target)) {
-        return path;
+  
+    function manhattan(state) {
+      let dist = 0;
+      for (let i = 0; i < 9; i++) {
+        if (state[i] === null) continue;
+        const targetIndex = state[i];
+        const currRow = Math.floor(i / 3), currCol = i % 3;
+        const targetRow = Math.floor(targetIndex / 3), targetCol = targetIndex % 3;
+        dist += Math.abs(currRow - targetRow) + Math.abs(currCol - targetCol);
       }
-
-      const empty = state.indexOf(null);
+      return dist;
+    }
+  
+    const openSet = [{ state: start, path: [], cost: 0 }];
+    const visited = new Map();
+    visited.set(serialize(start), 0);
+  
+    while (openSet.length > 0) {
+      // sort by estimated cost (lowest first)
+      openSet.sort((a, b) => (a.cost + manhattan(a.state)) - (b.cost + manhattan(b.state)));
+      const current = openSet.shift();
+      const serialized = serialize(current.state);
+  
+      if (serialized === targetStr) {
+        return current.path;
+      }
+  
+      const empty = current.state.indexOf(null);
       const moves = [-1, 1, -3, 3];
-
+  
       for (const move of moves) {
         const newIndex = empty + move;
         if (newIndex < 0 || newIndex >= 9) continue;
         if (move === -1 && empty % 3 === 0) continue;
         if (move === 1 && empty % 3 === 2) continue;
-
-        const newState = [...state];
+  
+        const newState = [...current.state];
         [newState[empty], newState[newIndex]] = [newState[newIndex], newState[empty]];
-
         const key = serialize(newState);
-        if (!visited.has(key)) {
-          visited.add(key);
-          queue.push({ state: newState, path: [...path, newState] });
+  
+        const newCost = current.path.length + 1;
+        if (!visited.has(key) || visited.get(key) > newCost) {
+          visited.set(key, newCost);
+          openSet.push({ state: newState, path: [...current.path, newState], cost: newCost });
         }
       }
     }
-
+  
     return [];
   }
+  
 
   function animateSolution(steps) {
     if (!steps || steps.length === 0) return;
