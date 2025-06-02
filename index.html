@@ -4,24 +4,34 @@
   <meta charset="UTF-8">
   <title>8-Piece Puzzle</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    #puzzle {
+      width: 300px;
+      height: 300px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 2px;
+      border: 2px solid #333;
+    }
+    .tile {
+      background-image: url('cr7.jpg'); /* Replace with your image */
+      background-size: 300px 300px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .empty {
+      background: #ccc;
+      cursor: default;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>8-Piece Puzzle</h1>
-  </header>
+  <div class="puzzle-wrapper">
+    <div id="puzzle" class="puzzle"></div>
+    <div id="win-message" class="win-message"></div>
+  </div>
+  <script src="puzzle.js"></script>
 
-  <main>
-    <p style="text-align: center;">This is a 8-puzzle website</p>
-    <p style="text-align: center;">You can pick a picture or use the default numbers option</p>
-    <img src="cr7.jpg" alt="Square Image" class="centered-image">
-    <button onclick="showMessage()">Click Me</button>
-    <p id="message"></p>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 My Website</p>
-  </footer>
-
-  <script src="script.js"></script>
 </body>
 </html>

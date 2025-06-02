@@ -1,44 +1,44 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f9f9f9;
-    color: #333;
-  }
-  
-  header, footer {
-    background-color: #005f73;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-  }
-  
-  main {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  button {
-    padding: 10px 15px;
-    background-color: #0a9396;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  button:hover {
-    background-color: #94d2bd;
-  }
-  .centered-image {
-    display: block;        
-    margin: 20px auto;       
-    width: 300px;           
-    height: 300px;           
-    object-fit: cover;      
-    border: 2px solid #0a9396;  
-    border-radius: 8px;      
-  }
-  
-  
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.puzzle-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.puzzle {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+.tile {
+  position: absolute; /* ADD THIS */
+  width: 100px;        /* ADD THIS */
+  height: 100px;       /* ADD THIS */
+  box-sizing: border-box; /* ADD THIS */
+  border: 1px solid #333; /* ADD THIS */
+  background-size: 300px 300px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.win-message {
+  margin-top: 20px;
+  font-size: 24px;
+  color: green;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
