@@ -4,6 +4,23 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: rgb(252, 202, 2);
+}
+
+.title {
+  font-size: 32px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px;
+  background: linear-gradient(135deg, #f0f0f0, #dcdcdc);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .puzzle-wrapper {
@@ -18,15 +35,31 @@ body {
   height: 300px;
 }
 
+.tile.number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 48px;
+  font-weight: bold;
+  color: #333;
+  background: #f0f0f0;
+  border: 1px solid #333;
+  cursor: pointer;
+}
+
 .tile {
-  position: absolute; /* ADD THIS */
-  width: 100px;        /* ADD THIS */
-  height: 100px;       /* ADD THIS */
-  box-sizing: border-box; /* ADD THIS */
-  border: 1px solid #333; /* ADD THIS */
+  position: absolute; 
+  width: 100px;       
+  height: 100px;      
+  box-sizing: border-box; 
+  border: 1px solid #333; 
   background-size: 300px 300px;
   cursor: pointer;
   transition: 0.3s;
+}
+
+.tile.empty {
+  background: rgb(162, 158, 158);
 }
 
 .win-message {
@@ -35,10 +68,35 @@ body {
   color: green;
 }
 
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
+#toggleModeBtn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50;      /* Green background */
+  color: white;                   /* White text */
+  border: none;
+  border-radius: 5px;             /* Rounded corners */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#toggleModeBtn:hover {
+  background-color: #45a049;      /* Darker green on hover */
+}
+
+#uploadBtn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007BFF;    /* Blue */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;  
+  transition: background-color 0.3s ease;
+}
+
+#uploadBtn:hover {
+  background-color: #0056b3;   /* Darker blue on hover */
 }
