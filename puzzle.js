@@ -1,4 +1,5 @@
 const puzzle = document.getElementById("puzzle");
+const winMessage = document.getElementById("win-message");
 const toggleBtn = document.getElementById("toggleModeBtn");
 
 let positions = [0,1,2,3,4,5,6,7,null]; // 0-7 tiles + empty
@@ -49,20 +50,28 @@ function moveTile(index) {
 }
 
 function shufflePuzzle() {
-  for (let i = positions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [positions[i], positions[j]] = [positions[j], positions[i]];
-  }
+  do {
+    for (let i = positions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [positions[i], positions[j]] = [positions[j], positions[i]];
+    }
+  } while (!isSolvable(positions) || checkWinImmediate());  
 }
 
+function checkWinImmediate() {
+  return positions.every((val, idx) => val === null ? idx === 8 : val === idx);
+}
+
+
+
 function checkWin() {
-  const winMessage = document.getElementById("win-message");
   if (positions.every((val, idx) => val === null ? idx === 8 : val === idx)) {
     winMessage.textContent = "🎉 You solved the puzzle!";
   } else {
     winMessage.textContent = "";
   }
 }
+
 
 // Toggle puzzle mode when button clicked
 toggleBtn.addEventListener("click", () => {
@@ -92,6 +101,100 @@ uploadInput.addEventListener('change', (event) => {
   };
   reader.readAsDataURL(file);
 });
+function solvePuzzle(start) {
+  const target = [0, 1, 2, 3, 4, 5, 6, 7, null];
+  const targetStr = target.map(v => v === null ? 'x' : v).join(',');
+  
+  const serialize = arr => arr.map(v => v === null ? 'x' : v).join(',');
+
+  function manhattan(state) {
+    let dist = 0;
+    for (let i = 0; i < 9; i++) {
+      if (state[i] === null) continue;
+      const targetIndex = state[i];
+      const currRow = Math.floor(i / 3), currCol = i % 3;
+      const targetRow = Math.floor(targetIndex / 3), targetCol = targetIndex % 3;
+      dist += Math.abs(currRow - targetRow) + Math.abs(currCol - targetCol);
+    }
+    return dist;
+  }
+
+  const openSet = [{ state: start, path: [], cost: 0 }];
+  const visited = new Map();
+  visited.set(serialize(start), 0);
+
+  while (openSet.length > 0) {
+    // sort by estimated cost (lowest first)
+    openSet.sort((a, b) => (a.cost + manhattan(a.state)) - (b.cost + manhattan(b.state)));
+    const current = openSet.shift();
+    const serialized = serialize(current.state);
+
+    if (serialized === targetStr) {
+      return current.path;
+    }
+
+    const empty = current.state.indexOf(null);
+    const moves = [-1, 1, -3, 3];
+
+    for (const move of moves) {
+      const newIndex = empty + move;
+      if (newIndex < 0 || newIndex >= 9) continue;
+      if (move === -1 && empty % 3 === 0) continue;
+      if (move === 1 && empty % 3 === 2) continue;
+
+      const newState = [...current.state];
+      [newState[empty], newState[newIndex]] = [newState[newIndex], newState[empty]];
+      const key = serialize(newState);
+
+      const newCost = current.path.length + 1;
+      if (!visited.has(key) || visited.get(key) > newCost) {
+        visited.set(key, newCost);
+        openSet.push({ state: newState, path: [...current.path, newState], cost: newCost });
+      }
+    }
+  }
+
+  return [];
+}
+
+
+function animateSolution(steps) {
+  if (!steps || steps.length === 0) return;
+
+  let i = 0;
+  const interval = setInterval(() => {
+    positions = steps[i];
+    drawPuzzle();
+    checkWin();
+    i++;
+    if (i >= steps.length) clearInterval(interval);
+  }, 400);
+}
+
+document.getElementById("solve-btn").addEventListener("click", () => {
+  if (!isSolvable(positions)) {
+    winMessage.textContent = "This puzzle is unsolvable! Try shuffling again.";
+    return;
+  }
+  const solution = solvePuzzle([...positions]);
+  winMessage.textContent = "Solving...";
+  if (solution.length === 0) {
+    winMessage.textContent = "No solution found.";
+    return;
+  }
+  animateSolution(solution);
+});
+
+function isSolvable(arr) {
+  const tiles = arr.filter(t => t !== null);
+  let inversions = 0;
+  for (let i = 0; i < tiles.length; i++) {
+    for (let j = i + 1; j < tiles.length; j++) {
+      if (tiles[i] > tiles[j]) inversions++;
+    }
+  }
+  return inversions % 2 === 0;
+}
 
 
 shufflePuzzle();
