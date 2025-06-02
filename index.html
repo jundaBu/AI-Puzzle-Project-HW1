@@ -21,14 +21,18 @@
       transition: 0.3s;
     }
     .empty {
-      background: #ccc;
+      background: #050505;
       cursor: default;
     }
   </style>
 </head>
 <body>
   <div class="puzzle-wrapper">
+    <h1 class="title">8 Piece Puzzle</h1>
     <div id="puzzle" class="puzzle"></div>
+    <button id="toggleModeBtn">Switch to Number Puzzle</button>
+    <input type="file" id="uploadImage" accept="image/*" style="display:none" />
+    <button id="uploadBtn">Upload Picture</button>
     <div id="win-message" class="win-message"></div>
   </div>
   <script src="puzzle.js"></script>
