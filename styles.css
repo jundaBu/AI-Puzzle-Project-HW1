@@ -17,14 +17,11 @@ body {
   width: 300px;
   height: 300px;
 }
-
 .tile {
-  position: absolute; /* ADD THIS */
-  width: 100px;        /* ADD THIS */
-  height: 100px;       /* ADD THIS */
-  box-sizing: border-box; /* ADD THIS */
-  border: 1px solid #333; /* ADD THIS */
-  background-size: 300px 300px;
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #333;
   cursor: pointer;
   transition: 0.3s;
 }
@@ -41,4 +38,11 @@ body {
   align-items: center;
   min-height: 100vh;
   margin: 0;
+}
+
+#solve-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }
