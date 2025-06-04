@@ -43,9 +43,30 @@ function moveTile(index) {
     validMoves.includes(emptyIndex) &&
     Math.abs(index % 3 - emptyIndex % 3) + Math.abs(Math.floor(index / 3) - Math.floor(emptyIndex / 3)) === 1
   ) {
+    if (!hasStarted) {
+      hasStarted = true;
+      startTime = Date.now();
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
     [positions[index], positions[emptyIndex]] = [positions[emptyIndex], positions[index]];
     drawPuzzle();
     checkWin();
+  }
+}
+
+function updateTimer() {
+  const seconds = Math.floor((Date.now() - startTime) / 1000);
+  timerDisplay.textContent = `Time: ${seconds}s`;
+}
+
+function resetTimer() {
+  hasStarted = false;
+  startTime = null;
+  timerDisplay.textContent = "Time: 0s";
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
   }
 }
 
@@ -56,6 +77,8 @@ function shufflePuzzle() {
       [positions[i], positions[j]] = [positions[j], positions[i]];
     }
   } while (!isSolvable(positions) || checkWinImmediate());  
+
+  resetTimer();
 }
 
 function checkWinImmediate() {
@@ -67,6 +90,10 @@ function checkWinImmediate() {
 function checkWin() {
   if (positions.every((val, idx) => val === null ? idx === 8 : val === idx)) {
     winMessage.textContent = "🎉 You solved the puzzle!";
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
   } else {
     winMessage.textContent = "";
   }
@@ -195,6 +222,11 @@ function isSolvable(arr) {
   }
   return inversions % 2 === 0;
 }
+
+let hasStarted = false;
+let timerInterval = null;
+let startTime = null;
+const timerDisplay = document.getElementById("timer");
 
 
 shufflePuzzle();
