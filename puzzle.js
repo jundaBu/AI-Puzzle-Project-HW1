@@ -7,6 +7,9 @@ let useNumbers = false; // false = image mode, true = numbers mode
 
 function drawPuzzle() {
   puzzle.innerHTML = "";
+
+  const isWinningState = positions.every((val, idx) => val === null ? idx === 8 : val === idx);
+
   positions.forEach((tile, i) => {
     const div = document.createElement("div");
     div.classList.add("tile");
@@ -17,11 +20,27 @@ function drawPuzzle() {
     div.style.left = `${col * 100}px`;
 
     if (tile === null) {
-      div.classList.add("empty");
+      if (isWinningState && i === 8) {
+        // Visually show the missing (9th) tile when puzzle is solved
+        if (useNumbers) {
+          div.classList.add("number");
+          div.textContent = 9;
+        } else {
+          const bgRow = 2;
+          const bgCol = 2;
+          div.style.backgroundImage = customImageURL ? `url('${customImageURL}')` : "url('cr7.jpg')";
+          div.style.backgroundSize = "300px 300px";
+          div.style.backgroundPosition = `-${bgCol * 100}px -${bgRow * 100}px`;
+        }
+      } else {
+        // Normal empty square
+        div.classList.add("empty");
+      }
     } else {
+      // Regular tile
       if (useNumbers) {
         div.classList.add("number");
-        div.textContent = tile + 1;  // numbers 1 to 8
+        div.textContent = tile + 1;
       } else {
         const bgRow = Math.floor(tile / 3);
         const bgCol = tile % 3;
@@ -29,11 +48,15 @@ function drawPuzzle() {
         div.style.backgroundSize = "300px 300px";
         div.style.backgroundPosition = `-${bgCol * 100}px -${bgRow * 100}px`;
       }
+
+      // Allow movement on click
       div.addEventListener("click", () => moveTile(i));
     }
+
     puzzle.appendChild(div);
   });
 }
+
 
 function moveTile(index) {
   const emptyIndex = positions.indexOf(null);
@@ -90,14 +113,20 @@ function checkWinImmediate() {
 function checkWin() {
   if (positions.every((val, idx) => val === null ? idx === 8 : val === idx)) {
     winMessage.textContent = "🎉 You solved the puzzle!";
+
+    // Stop the timer
     if (timerInterval) {
       clearInterval(timerInterval);
       timerInterval = null;
     }
+
+    // Show the last tile
+    drawPuzzle();
   } else {
     winMessage.textContent = "";
   }
 }
+
 
 
 // Toggle puzzle mode when button clicked
@@ -222,6 +251,18 @@ function isSolvable(arr) {
   }
   return inversions % 2 === 0;
 }
+
+function isSolved() {
+  return positions.every((val, idx) => val === null ? idx === 8 : val === idx);
+}
+
+document.getElementById("shuffleBtn").addEventListener("click", () => {
+  shufflePuzzle();
+  drawPuzzle();
+  resetTimer();
+  winMessage.textContent = "";
+});
+
 
 let hasStarted = false;
 let timerInterval = null;

@@ -117,6 +117,23 @@ body {
   background-color: #e60000;    
 }
 
+#shuffleBtn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #FF9800; /* Orange */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+#shuffleBtn:hover {
+  background-color: #e68900;
+}
+
+
 .timer {
   font-size: 32px;
   margin-bottom: 20px;
