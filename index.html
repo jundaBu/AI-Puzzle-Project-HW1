@@ -8,7 +8,7 @@
     #puzzle {
       width: 300px;
       height: 300px;
-      display: grid;
+      /*display: grid;*/
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
       gap: 2px;
@@ -29,6 +29,7 @@
 <body>
   <div class="puzzle-wrapper">
     <h1 class="title">8 Piece Puzzle</h1>
+    <div id="timer" class="timer">Time: 0s</div>
     <div id="puzzle" class="puzzle"></div>
     <button id="solve-btn">Solve</button>
     <button id="toggleModeBtn">Switch to Number Puzzle</button>

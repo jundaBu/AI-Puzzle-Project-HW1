@@ -112,6 +112,22 @@ body {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+
 #solve-btn:hover {
   background-color: #e60000;    
+}
+
+.timer {
+  font-size: 32px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 10px;
+  background: linear-gradient(135deg, #02fd3d, #d702f8);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
