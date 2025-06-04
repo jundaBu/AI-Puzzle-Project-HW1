@@ -18,7 +18,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 1px;
   padding: 10px;
-  background: linear-gradient(135deg, #f0f0f0, #dcdcdc);
+  background: linear-gradient(135deg, #0280fd, #f8f402);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -78,32 +78,40 @@ body {
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 #toggleModeBtn:hover {
-  background-color: #45a049;      /* Darker green on hover */
+  background-color: #45a049;    
 }
 
 #uploadBtn {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #007BFF;    /* Blue */
+  background-color: #007BFF;    
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 20px;  
+  margin-top: 10px;  
   transition: background-color 0.3s ease;
 }
 
 #uploadBtn:hover {
-  background-color: #0056b3;   /* Darker blue on hover */
+  background-color: #0056b3;   
 }
 
 #solve-btn {
+  background-color: #ff0d00;    
+  color: white;
+  border: none;
+  border-radius: 5px;
   margin-top: 10px;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+#solve-btn:hover {
+  background-color: #e60000;    
 }
