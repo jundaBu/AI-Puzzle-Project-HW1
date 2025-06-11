@@ -130,27 +130,86 @@ document.getElementById("image-upload").addEventListener("change", function (eve
   
     return [];
   }
-  
-
-  function animateSolution(steps) {
-    if (!steps || steps.length === 0) return;
-
-    let i = 0;
-    const interval = setInterval(() => {
-      positions = steps[i];
-      drawPuzzle();
-      checkWin();
-      i++;
-      if (i >= steps.length) clearInterval(interval);
-    }, 400);
-  }
-
   document.getElementById("solve-btn").addEventListener("click", () => {
     const solution = solvePuzzle([...positions]);
     winMessage.textContent = "Solving...";
     animateSolution(solution);
   });
 
+
+function animateSolution(steps) {
+  if (!steps || steps.length === 0) return;
+
+  let i = 0;
+  const interval = setInterval(() => {
+    positions = steps[i];
+    drawPuzzle();
+    checkWin();
+    i++;
+    if (i >= steps.length) clearInterval(interval);
+  }, 400);
+}
+
+function isSolvable(arr) {
+  const tiles = arr.filter(t => t !== null);
+  let inversions = 0;
+  for (let i = 0; i < tiles.length; i++) {
+    for (let j = i + 1; j < tiles.length; j++) {
+      if (tiles[i] > tiles[j]) inversions++;
+    }
+  }
+  return inversions % 2 === 0;
+}
+
+// Toggle puzzle mode when button clicked
+toggleBtn.addEventListener("click", () => {
+  useNumbers = !useNumbers;
+  toggleBtn.textContent = useNumbers ? "Switch to Image Puzzle" : "Switch to Number Puzzle";
   shufflePuzzle();
   drawPuzzle();
-};
+});
+
+const uploadBtn = document.getElementById('uploadBtn');
+const uploadInput = document.getElementById('uploadImage');
+
+let customImageURL = null;
+
+uploadBtn.addEventListener('click', () => {
+  uploadInput.click();
+});
+
+uploadInput.addEventListener('change', (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    customImageURL = e.target.result;  // data URL of uploaded image
+    drawPuzzle();
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById("solve-btn").addEventListener("click", () => {
+  if (!isSolvable(positions)) {
+    winMessage.textContent = "This puzzle is unsolvable! Try shuffling again.";
+    return;
+  }
+  const solution = solvePuzzle([...positions]);
+  winMessage.textContent = "Solving...";
+  if (solution.length === 0) {
+    winMessage.textContent = "No solution found.";
+    return;
+  }
+  animateSolution(solution);
+});
+
+document.getElementById("shuffle-btn").addEventListener("click", () => {
+  positions = [0, 1, 2, 3, 4, 5, 6, 7, null]; // reset with 8 tiles + empty
+  shufflePuzzle();
+  drawPuzzle();
+  winMessage.textContent = "";
+});
+
+shufflePuzzle();
+drawPuzzle();
