@@ -4,6 +4,7 @@ const toggleBtn = document.getElementById("toggleModeBtn");
 
 let positions = [0,1,2,3,4,5,6,7,null]; // 0-7 tiles + empty
 let useNumbers = false; // false = image mode, true = numbers mode
+let moveCount = 0;
 
 function drawPuzzle() {
   puzzle.innerHTML = "";
@@ -28,7 +29,7 @@ function drawPuzzle() {
         } else {
           const bgRow = 2;
           const bgCol = 2;
-          div.style.backgroundImage = customImageURL ? `url('${customImageURL}')` : "url('cr7.jpg')";
+          div.style.backgroundImage = customImageURL ? `url('${customImageURL}')` : "url('computer.jpg')";
           div.style.backgroundSize = "300px 300px";
           div.style.backgroundPosition = `-${bgCol * 100}px -${bgRow * 100}px`;
         }
@@ -44,7 +45,7 @@ function drawPuzzle() {
       } else {
         const bgRow = Math.floor(tile / 3);
         const bgCol = tile % 3;
-        div.style.backgroundImage = customImageURL ? `url('${customImageURL}')` : "url('cr7.jpg')";
+        div.style.backgroundImage = customImageURL ? `url('${customImageURL}')` : "url('computer.jpg')";
         div.style.backgroundSize = "300px 300px";
         div.style.backgroundPosition = `-${bgCol * 100}px -${bgRow * 100}px`;
       }
@@ -73,9 +74,16 @@ function moveTile(index) {
     }
 
     [positions[index], positions[emptyIndex]] = [positions[emptyIndex], positions[index]];
+    moveCount++;
+    updateMoveCounter();
     drawPuzzle();
     checkWin();
   }
+}
+
+function updateMoveCounter() {
+  const moveCounter = document.getElementById("moveCounter");
+  moveCounter.textContent = `Moves: ${moveCount}`;
 }
 
 function updateTimer() {
@@ -91,6 +99,9 @@ function resetTimer() {
     clearInterval(timerInterval);
     timerInterval = null;
   }
+
+  moveCount = 0;
+  updateMoveCounter();
 }
 
 function shufflePuzzle() {
@@ -119,6 +130,9 @@ function checkWin() {
       clearInterval(timerInterval);
       timerInterval = null;
     }
+
+    /*moveCount = 0;*/
+    updateMoveCounter();
 
     // Show the last tile
     drawPuzzle();
@@ -214,32 +228,59 @@ function solvePuzzle(start) {
 }
 
 
-function animateSolution(steps) {
-  if (!steps || steps.length === 0) return;
-
+function animateSolution(solution) {
   let i = 0;
+  moveCount = 0;
+  updateMoveCounter();
+
   const interval = setInterval(() => {
-    positions = steps[i];
+    if (i >= solution.length) {
+      clearInterval(interval);
+      hasStarted = false;
+      checkWin();
+      return;
+    }
+
+    positions = solution[i];  // update positions to next state
     drawPuzzle();
-    checkWin();
+    
+    moveCount = i + 1;
+    updateMoveCounter();
+
     i++;
-    if (i >= steps.length) clearInterval(interval);
-  }, 400);
+  }, 300);
 }
 
+
+
+
+
 document.getElementById("solve-btn").addEventListener("click", () => {
+  resetTimer();
+  moveCount = 0;
+  updateMoveCounter();
+
   if (!isSolvable(positions)) {
     winMessage.textContent = "This puzzle is unsolvable! Try shuffling again.";
     return;
   }
+
   const solution = solvePuzzle([...positions]);
   winMessage.textContent = "Solving...";
+
   if (solution.length === 0) {
     winMessage.textContent = "No solution found.";
     return;
   }
-  animateSolution(solution);
+
+  hasStarted = true;
+  startTime = Date.now();
+  timerInterval = setInterval(updateTimer, 1000);
+
+  animateSolution(solution); // Live updating handled inside
 });
+
+
 
 function isSolvable(arr) {
   const tiles = arr.filter(t => t !== null);
@@ -263,12 +304,80 @@ document.getElementById("shuffleBtn").addEventListener("click", () => {
   winMessage.textContent = "";
 });
 
+function solvePuzzleBFS(start) {
+  const target = [0, 1, 2, 3, 4, 5, 6, 7, null];
+  const targetStr = target.map(v => v === null ? 'x' : v).join(',');
+
+  const serialize = arr => arr.map(v => v === null ? 'x' : v).join(',');
+
+  const queue = [{ state: start, path: [] }];
+  const visited = new Set();
+  visited.add(serialize(start));
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    const serialized = serialize(current.state);
+
+    if (serialized === targetStr) {
+      return current.path;
+    }
+
+    const empty = current.state.indexOf(null);
+    const moves = [-1, 1, -3, 3];
+
+    for (const move of moves) {
+      const newIndex = empty + move;
+      if (newIndex < 0 || newIndex >= 9) continue;
+      if (move === -1 && empty % 3 === 0) continue;
+      if (move === 1 && empty % 3 === 2) continue;
+
+      const newState = [...current.state];
+      [newState[empty], newState[newIndex]] = [newState[newIndex], newState[empty]];
+
+      const key = serialize(newState);
+      if (!visited.has(key)) {
+        visited.add(key);
+        queue.push({ state: newState, path: [...current.path, newState] });
+      }
+    }
+  }
+
+  return [];
+}
+
+
 
 let hasStarted = false;
 let timerInterval = null;
 let startTime = null;
 const timerDisplay = document.getElementById("timer");
 
+
+// Add event listener for BFS solve button
+document.getElementById("solve-bfs-btn").addEventListener("click", () => {
+  resetTimer();
+  moveCount = 0;
+  updateMoveCounter();
+
+  if (!isSolvable(positions)) {
+    winMessage.textContent = "This puzzle is unsolvable! Try shuffling again.";
+    return;
+  }
+
+  const solution = solvePuzzleBFS([...positions]);
+  winMessage.textContent = "Solving with BFS...";
+
+  if (solution.length === 0) {
+    winMessage.textContent = "No solution found.";
+    return;
+  }
+
+  hasStarted = true;
+  startTime = Date.now();
+  timerInterval = setInterval(updateTimer, 1000);
+
+  animateSolution(solution);
+});
 
 shufflePuzzle();
 drawPuzzle();

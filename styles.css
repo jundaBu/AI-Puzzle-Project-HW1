@@ -7,6 +7,37 @@ body {
   background-color: rgb(252, 202, 2);
 }
 
+#status-bar {
+   font-size: 32px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+  font-family: 'Courier New', Courier, monospace;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px;
+  background-color: #8cf882;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}    
+
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #444;
+}
+
+.status-item img {
+  width: 18px;
+  height: 18px;
+  filter: grayscale(50%) brightness(80%);
+}
+
+
 .title {
   font-size: 32px;
   margin-bottom: 20px;
@@ -29,11 +60,13 @@ body {
   align-items: center;
 }
 
-.puzzle {
-  position: relative;
+#puzzle {
   width: 300px;
   height: 300px;
+  position: relative;
+  border: 2px solid #333;
 }
+
 
 .tile.number {
   display: flex;
@@ -115,6 +148,22 @@ body {
 
 #solve-btn:hover {
   background-color: #e60000;    
+}
+
+#solve-bfs-btn {
+  background-color: #001aff;    
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#solve-bfs-btn:hover {
+  background-color: #3372fb;    
 }
 
 #shuffleBtn {
