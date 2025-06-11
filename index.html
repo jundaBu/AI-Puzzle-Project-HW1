@@ -15,7 +15,7 @@
       border: 2px solid #333;
     }
     .tile {
-      background-image: url('cr7.jpg');
+      background-image: url('computer.jpg');
       background-size: 300px 300px;
       cursor: pointer;
       transition: 0.3s;
@@ -29,11 +29,15 @@
 <body>
   <div class="puzzle-wrapper">
     <h1 class="title">8 Piece Puzzle</h1>
-    <div id="timer" class="timer">Time: 0s</div>
+    <div id="status-bar">
+      <div id="timer">Time: 0s</div>
+      <div id="moveCounter">Moves: 0</div>
+    </div>
     <div id="puzzle" class="puzzle"></div>
     <button id="shuffleBtn">Shuffle</button>
 
-    <button id="solve-btn">Solve</button>
+    <button id="solve-btn">Solve A*</button>
+    <button id="solve-bfs-btn">Solve with BFS</button>
     <button id="toggleModeBtn">Switch to Number Puzzle</button>
     <input type="file" id="uploadImage" accept="image/*" style="display:none" />
     <button id="uploadBtn">Upload Picture</button>
